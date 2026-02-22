@@ -1,0 +1,2475 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balita PH — Philippine News Live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ========================================
+   CSS VARIABLES & RESET
+   ======================================== */
+:root {
+  --ph-red: #C41E3A;
+  --ph-gold: #FFD700;
+  --ph-blue: #0038A8;
+  --accent: #FF4D6D;
+  --accent-soft: rgba(196,30,58,0.12);
+
+  /* Dark theme (default) */
+  --bg-primary: #070B14;
+  --bg-secondary: #0E1525;
+  --bg-card: #111827;
+  --bg-card-hover: #1A2438;
+  --bg-modal: #0E1525;
+  --bg-settings: #0A0F1E;
+  --border: rgba(255,255,255,0.07);
+  --border-strong: rgba(255,255,255,0.15);
+  --text-primary: #F0F4FF;
+  --text-secondary: #8899BB;
+  --text-muted: #4A5A78;
+  --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  --shadow-card: 0 4px 20px rgba(0,0,0,0.4);
+  --skeleton-bg: #1A2438;
+  --skeleton-shine: #1F2E48;
+  --badge-bg: rgba(196,30,58,0.15);
+  --breaking-bg: linear-gradient(90deg, #C41E3A, #FF4D6D);
+}
+
+[data-theme="light"] {
+  --bg-primary: #F4F6FA;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F8FAFF;
+  --bg-modal: #FFFFFF;
+  --bg-settings: #F0F4FA;
+  --border: rgba(0,0,0,0.07);
+  --border-strong: rgba(0,0,0,0.15);
+  --text-primary: #0A0E1A;
+  --text-secondary: #4A5A78;
+  --text-muted: #8899BB;
+  --shadow: 0 8px 32px rgba(0,0,0,0.12);
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.08);
+  --skeleton-bg: #E8EDF5;
+  --skeleton-shine: #F0F4FA;
+  --badge-bg: rgba(196,30,58,0.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
+}
+
+/* ========================================
+   TYPOGRAPHY
+   ======================================== */
+h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+/* ========================================
+   SCROLLBAR
+   ======================================== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--ph-red); border-radius: 3px; }
+
+/* ========================================
+   BREAKING NEWS TICKER
+   ======================================== */
+#breaking-ticker {
+  background: var(--breaking-bg);
+  color: white;
+  padding: 8px 0;
+  overflow: hidden;
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.ticker-label {
+  background: rgba(0,0,0,0.3);
+  padding: 0 16px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  border-right: 1px solid rgba(255,255,255,0.3);
+}
+
+.ticker-wrapper {
+  overflow: hidden;
+  flex: 1;
+}
+
+.ticker-content {
+  display: inline-flex;
+  animation: ticker-scroll 40s linear infinite;
+  white-space: nowrap;
+  gap: 60px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0 20px;
+}
+
+.ticker-content:hover { animation-play-state: paused; cursor: pointer; }
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+#main-header {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 37px;
+  z-index: 800;
+  box-shadow: var(--shadow);
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--breaking-bg);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.logo-text span { color: var(--ph-red); }
+
+.logo-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Search */
+.search-wrapper {
+  flex: 1;
+  position: relative;
+  max-width: 500px;
+}
+
+.search-wrapper input {
+  width: 100%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 50px;
+  padding: 9px 18px 9px 40px;
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-wrapper input:focus {
+  border-color: var(--ph-red);
+  box-shadow: 0 0 0 3px rgba(196,30,58,0.15);
+}
+
+.search-wrapper input::placeholder { color: var(--text-muted); }
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.icon-btn {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 17px;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  position: relative;
+}
+
+.icon-btn:hover {
+  background: var(--accent-soft);
+  border-color: var(--ph-red);
+  color: var(--ph-red);
+  transform: translateY(-1px);
+}
+
+.icon-btn.active {
+  background: var(--ph-red);
+  border-color: var(--ph-red);
+  color: white;
+}
+
+.badge-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  background: var(--ph-gold);
+  border-radius: 50%;
+  border: 2px solid var(--bg-secondary);
+}
+
+/* Category pills */
+.category-bar {
+  display: flex;
+  gap: 8px;
+  padding: 10px 20px;
+  overflow-x: auto;
+  max-width: 1200px;
+  margin: 0 auto;
+  scrollbar-width: none;
+}
+
+.category-bar::-webkit-scrollbar { display: none; }
+
+.cat-pill {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.cat-pill:hover, .cat-pill.active {
+  background: var(--ph-red);
+  border-color: var(--ph-red);
+  color: white;
+}
+
+/* ========================================
+   MAIN CONTENT
+   ======================================== */
+#app-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Status bar */
+#status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.status-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: #22C55E;
+  border-radius: 50%;
+  animation: pulse-dot 2s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ========================================
+   NEWS GRID
+   ======================================== */
+#news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+/* ========================================
+   NEWS CARD
+   ======================================== */
+.news-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  animation: fadeSlideIn 0.4s ease both;
+}
+
+.news-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--ph-red);
+  box-shadow: 0 8px 32px rgba(196,30,58,0.2);
+  transform: translateY(-3px);
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.news-card:nth-child(1) { animation-delay: 0.05s; }
+.news-card:nth-child(2) { animation-delay: 0.1s; }
+.news-card:nth-child(3) { animation-delay: 0.15s; }
+.news-card:nth-child(4) { animation-delay: 0.2s; }
+.news-card:nth-child(5) { animation-delay: 0.25s; }
+.news-card:nth-child(6) { animation-delay: 0.3s; }
+
+.card-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background: var(--skeleton-bg);
+  display: block;
+  transition: opacity 0.3s;
+}
+
+.card-image.lazy { opacity: 0; }
+.card-image.loaded { opacity: 1; }
+
+.card-image-placeholder {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--skeleton-bg) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: var(--text-muted);
+}
+
+.card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-category {
+  background: var(--badge-bg);
+  color: var(--ph-red);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.card-breaking {
+  background: var(--ph-red);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  animation: blink-badge 2s infinite;
+}
+
+@keyframes blink-badge {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.card-source {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.card-time {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.card-headline {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.card-headline .highlight {
+  background: rgba(255,215,0,0.3);
+  color: var(--ph-gold);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+.card-snippet {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.card-action-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.card-action-btn:hover { background: var(--accent-soft); color: var(--ph-red); }
+.card-action-btn.bookmarked { color: var(--ph-gold); }
+
+/* ========================================
+   SKELETON LOADERS
+   ======================================== */
+.skeleton-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  animation: fadeSlideIn 0.3s ease both;
+}
+
+.skeleton-img {
+  height: 180px;
+  background: var(--skeleton-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+
+.skeleton-line {
+  height: 12px;
+  background: var(--skeleton-bg);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-line.short { width: 40%; }
+.skeleton-line.medium { width: 70%; }
+.skeleton-line.tall { height: 16px; }
+
+.skeleton-img::after, .skeleton-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, var(--skeleton-shine) 50%, transparent 100%);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+/* ========================================
+   NEWS MODAL
+   ======================================== */
+#modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+#modal-overlay.active { display: flex; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+#news-modal {
+  background: var(--bg-modal);
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  animation: modalSlideIn 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-image {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 20px 20px 0 0;
+  display: block;
+}
+
+.modal-image-placeholder {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, var(--bg-card) 0%, var(--skeleton-bg) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+  border-radius: 20px 20px 0 0;
+}
+
+.modal-body { padding: 24px; }
+
+.modal-top-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.modal-headline {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.3;
+  margin-bottom: 16px;
+}
+
+.modal-content {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.modal-btn {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  padding: 9px 16px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.modal-btn:hover { background: var(--accent-soft); border-color: var(--ph-red); color: var(--ph-red); }
+
+.modal-btn.primary {
+  background: var(--ph-red);
+  border-color: var(--ph-red);
+  color: white;
+}
+
+.modal-btn.primary:hover { background: #A01830; }
+
+.modal-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.modal-close-btn:hover { background: var(--ph-red); }
+
+.modal-image-wrapper { position: relative; }
+
+#summary-box {
+  background: var(--bg-primary);
+  border: 1px solid var(--ph-red);
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  margin-top: 16px;
+  display: none;
+}
+
+#summary-box.visible { display: block; animation: fadeSlideIn 0.3s ease; }
+
+#summary-box .summary-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--ph-red);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ========================================
+   SETTINGS DRAWER
+   ======================================== */
+#settings-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  display: none;
+}
+
+#settings-overlay.active { display: block; animation: fadeIn 0.2s ease; }
+
+#settings-drawer {
+  position: fixed;
+  top: 0;
+  right: -360px;
+  width: 340px;
+  height: 100%;
+  background: var(--bg-settings);
+  border-left: 1px solid var(--border-strong);
+  z-index: 1000;
+  overflow-y: auto;
+  transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+  padding: 24px;
+  box-shadow: -8px 0 40px rgba(0,0,0,0.4);
+}
+
+#settings-drawer.open { right: 0; }
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.drawer-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.drawer-close {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.drawer-close:hover { background: var(--ph-red); color: white; border-color: var(--ph-red); }
+
+.settings-section {
+  margin-bottom: 24px;
+}
+
+.settings-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-row:last-child { border-bottom: none; }
+
+.settings-row-label {
+  font-size: 14px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Toggle switch */
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle input { opacity: 0; width: 0; height: 0; }
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 50px;
+  transition: 0.3s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 2px;
+  top: 2px;
+  background: var(--text-muted);
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.toggle input:checked + .toggle-slider {
+  background: var(--ph-red);
+  border-color: var(--ph-red);
+}
+
+.toggle input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+  background: white;
+}
+
+/* Select */
+.settings-select {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 6px 12px;
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Font size control */
+.font-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.font-btn {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+
+.font-btn:hover { background: var(--ph-red); color: white; border-color: var(--ph-red); }
+
+#font-size-display {
+  font-size: 13px;
+  color: var(--text-secondary);
+  min-width: 30px;
+  text-align: center;
+}
+
+/* Logout */
+.logout-btn {
+  width: 100%;
+  background: rgba(196,30,58,0.1);
+  border: 1px solid rgba(196,30,58,0.3);
+  border-radius: 12px;
+  padding: 12px;
+  color: var(--ph-red);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.logout-btn:hover { background: var(--ph-red); color: white; }
+
+/* ========================================
+   BOOKMARKS PANEL
+   ======================================== */
+#bookmarks-panel {
+  display: none;
+  animation: fadeSlideIn 0.3s ease;
+}
+
+#bookmarks-panel.active { display: block; }
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+
+.empty-state-icon { font-size: 50px; margin-bottom: 16px; }
+.empty-state-title { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 8px; color: var(--text-secondary); }
+.empty-state-text { font-size: 14px; }
+
+/* ========================================
+   ERROR STATE
+   ======================================== */
+.error-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+  grid-column: 1 / -1;
+}
+
+.error-icon { font-size: 50px; margin-bottom: 16px; }
+.error-title { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 8px; color: var(--text-secondary); }
+.error-text { font-size: 14px; margin-bottom: 20px; }
+.retry-btn {
+  background: var(--ph-red);
+  border: none;
+  border-radius: 50px;
+  padding: 10px 28px;
+  color: white;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.retry-btn:hover { opacity: 0.85; }
+
+/* ========================================
+   TOAST NOTIFICATIONS
+   ======================================== */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow);
+  animation: toastIn 0.3s cubic-bezier(0.4,0,0.2,1);
+  max-width: 300px;
+  font-size: 14px;
+}
+
+.toast.success { border-color: #22C55E; }
+.toast.error { border-color: var(--ph-red); }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(40px); }
+}
+
+/* ========================================
+   OFFLINE BANNER
+   ======================================== */
+#offline-banner {
+  background: linear-gradient(90deg, #B45309, #D97706);
+  color: white;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  display: none;
+}
+
+#offline-banner.visible { display: block; }
+
+/* ========================================
+   FOOTER
+   ======================================== */
+#app-footer {
+  text-align: center;
+  padding: 30px 20px;
+  color: var(--text-muted);
+  font-size: 12px;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+
+/* ========================================
+   VIEW TABS
+   ======================================== */
+.view-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 3px;
+}
+
+.view-tab {
+  padding: 5px 14px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  border: none;
+  background: none;
+}
+
+.view-tab.active { background: var(--ph-red); color: white; }
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 600px) {
+  .logo-sub { display: none; }
+  .logo-text { font-size: 16px; }
+  #news-grid { grid-template-columns: 1fr; }
+  #main-header { top: 34px; }
+  .modal-headline { font-size: 19px; }
+  .modal-image { height: 200px; }
+  #settings-drawer { width: 100%; right: -100%; }
+}
+
+@media (max-width: 400px) {
+  .header-top { padding: 10px 12px; gap: 8px; }
+  #app-content { padding: 12px; }
+}
+
+/* ========================================
+   TRANSLATE INDICATOR
+   ======================================== */
+.translate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0,56,168,0.15);
+  color: var(--ph-blue);
+  border: 1px solid rgba(0,56,168,0.3);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+[data-theme="dark"] .translate-badge {
+  background: rgba(100,160,255,0.1);
+  color: #6FA0FF;
+  border-color: rgba(100,160,255,0.3);
+}
+
+/* spin for loading */
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Voice reading indicator */
+.reading-active { color: var(--ph-gold) !important; }
+
+/* Separator */
+.cat-dot {
+  width: 4px;
+  height: 4px;
+  background: var(--text-muted);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<!-- OFFLINE BANNER -->
+<div id="offline-banner">📡 You're offline — showing cached news from last session</div>
+
+<!-- BREAKING NEWS TICKER -->
+<div id="breaking-ticker">
+  <div class="ticker-label">🔴 BREAKING</div>
+  <div class="ticker-wrapper">
+    <div class="ticker-content" id="ticker-content">
+      Loading latest Philippine news...
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header id="main-header">
+  <div class="header-top">
+    <div class="logo-area">
+      <div class="logo-icon">🇵🇭</div>
+      <div>
+        <div class="logo-text">Balita<span>PH</span></div>
+        <div class="logo-sub">Live Philippine News</div>
+      </div>
+    </div>
+
+    <div class="search-wrapper">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Search Philippine news..." autocomplete="off">
+    </div>
+
+    <div class="header-actions">
+      <button class="icon-btn" id="translate-btn" title="Translate to Bisaya">🌐</button>
+      <button class="icon-btn" id="refresh-btn" title="Refresh news">🔄</button>
+      <button class="icon-btn" id="bookmarks-btn" title="Bookmarks">🔖</button>
+      <button class="icon-btn" id="settings-btn" title="Settings">⚙️</button>
+    </div>
+  </div>
+
+  <!-- Category pills -->
+  <div class="category-bar" id="category-bar">
+    <button class="cat-pill active" data-cat="all">All</button>
+    <button class="cat-pill" data-cat="politics">Politics</button>
+    <button class="cat-pill" data-cat="economy">Economy</button>
+    <button class="cat-pill" data-cat="weather">Weather</button>
+    <button class="cat-pill" data-cat="sports">Sports</button>
+    <button class="cat-pill" data-cat="entertainment">Entertainment</button>
+    <button class="cat-pill" data-cat="technology">Technology</button>
+    <button class="cat-pill" data-cat="crime">Crime</button>
+    <button class="cat-pill" data-cat="health">Health</button>
+  </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main id="app-content">
+  <!-- Status bar -->
+  <div id="status-bar">
+    <div class="status-text">
+      <div class="live-dot"></div>
+      <span id="status-text">Fetching latest news...</span>
+    </div>
+    <div class="view-tabs">
+      <button class="view-tab active" id="tab-news" onclick="switchView('news')">📰 News</button>
+      <button class="view-tab" id="tab-bookmarks" onclick="switchView('bookmarks')">🔖 Saved</button>
+    </div>
+  </div>
+
+  <!-- News Grid -->
+  <div id="news-grid"></div>
+
+  <!-- Bookmarks Panel -->
+  <div id="bookmarks-panel"></div>
+</main>
+
+<!-- FOOTER -->
+<footer id="app-footer">
+  <p>Balita PH © 2025 · News from Rappler, Inquirer, PhilStar, ABS-CBN & Manila Bulletin · Last 48 hours</p>
+</footer>
+
+<!-- MODAL -->
+<div id="modal-overlay">
+  <div id="news-modal">
+    <div class="modal-image-wrapper" id="modal-image-wrapper"></div>
+    <div class="modal-body">
+      <div class="modal-top-meta" id="modal-meta"></div>
+      <h2 class="modal-headline" id="modal-headline"></h2>
+      <p class="modal-content" id="modal-content"></p>
+      <div id="summary-box">
+        <div class="summary-label">🤖 AI Summary</div>
+        <div id="summary-text"></div>
+      </div>
+      <div class="modal-actions" id="modal-actions"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS DRAWER -->
+<div id="settings-overlay"></div>
+<div id="settings-drawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Settings</div>
+    <button class="drawer-close" onclick="closeSettings()">✕</button>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-label">Appearance</div>
+    <div class="settings-row">
+      <span class="settings-row-label">🌙 Dark Mode</span>
+      <label class="toggle">
+        <input type="checkbox" id="dark-mode-toggle" checked onchange="toggleTheme()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="settings-row">
+      <span class="settings-row-label">🔤 Font Size</span>
+      <div class="font-control">
+        <button class="font-btn" onclick="changeFontSize(-1)">−</button>
+        <span id="font-size-display">16px</span>
+        <button class="font-btn" onclick="changeFontSize(1)">+</button>
+      </div>
+    </div>
+    <div class="settings-row">
+      <span class="settings-row-label">🖼️ Show Images</span>
+      <label class="toggle">
+        <input type="checkbox" id="images-toggle" checked onchange="toggleImages()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-label">Language & Translation</div>
+    <div class="settings-row">
+      <span class="settings-row-label">🌐 Auto-translate to Bisaya</span>
+      <label class="toggle">
+        <input type="checkbox" id="auto-translate-toggle" onchange="toggleAutoTranslate()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-label">News Preferences</div>
+    <div class="settings-row">
+      <span class="settings-row-label">🔔 Breaking Notifications</span>
+      <label class="toggle">
+        <input type="checkbox" id="notif-toggle" onchange="toggleNotifications()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="settings-row">
+      <span class="settings-row-label">🔄 Auto-refresh</span>
+      <select class="settings-select" id="refresh-interval" onchange="setAutoRefresh()">
+        <option value="0">Off</option>
+        <option value="5">5 min</option>
+        <option value="10" selected>10 min</option>
+        <option value="15">15 min</option>
+        <option value="30">30 min</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-label">Account</div>
+    <div class="settings-row">
+      <span class="settings-row-label">📊 Cache Size</span>
+      <span id="cache-size" style="font-size:13px;color:var(--text-muted)">Calculating...</span>
+    </div>
+    <div class="settings-row" style="cursor:pointer" onclick="clearCache()">
+      <span class="settings-row-label">🗑️ Clear Cache</span>
+      <span style="font-size:20px;color:var(--text-muted)">›</span>
+    </div>
+    <button class="logout-btn" onclick="logout()">🚪 Logout & Reset App</button>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- ========================================
+     JAVASCRIPT
+     ======================================== -->
+<script>
+'use strict';
+
+// ======================================
+// APP STATE
+// ======================================
+const STATE = {
+  articles: [],         // all fetched articles
+  filtered: [],         // after category/search filter
+  bookmarks: [],        // saved articles
+  currentArticle: null, // open in modal
+  isTranslated: false,  // global translate state
+  category: 'all',
+  searchQuery: '',
+  showImages: true,
+  fontSize: 16,
+  isLoading: false,
+  autoRefreshInterval: null,
+  isSpeaking: false,
+  speechUtterance: null,
+  currentView: 'news',  // 'news' | 'bookmarks'
+};
+
+// ======================================
+// RSS SOURCES (Philippine news)
+// ======================================
+const RSS_SOURCES = [
+  { name: 'Rappler',         url: 'https://www.rappler.com/feed/' },
+  { name: 'Inquirer',        url: 'https://newsinfo.inquirer.net/feed' },
+  { name: 'PhilStar',        url: 'https://www.philstar.com/rss/headlines' },
+  { name: 'Manila Bulletin', url: 'https://mb.com.ph/feed' },
+  { name: 'GMA News',        url: 'https://data.gmanetwork.com/gno/rss/news/feed.xml' },
+];
+
+// CORS proxy pool — tried in order until one succeeds
+const CORS_PROXIES = [
+  url => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+];
+
+const MYMEMORY_API = 'https://api.mymemory.translated.net/get';
+
+// ======================================
+// CATEGORY DETECTION
+// ======================================
+function detectCategory(title = '', content = '') {
+  const text = (title + ' ' + content).toLowerCase();
+  if (/typhoon|flood|earthquake|weather|bagyo|baha|quake|storm|rain|signal/.test(text)) return 'weather';
+  if (/president|senate|congress|election|vote|duterte|marcos|mayor|governor|politics|partido|comelec/.test(text)) return 'politics';
+  if (/peso|gdp|economy|stock|trade|budget|inflation|bsp|bangko|market|fiscal|invest/.test(text)) return 'economy';
+  if (/basketball|pba|pga|sports|athlete|champion|game|match|tournament|football|boxing/.test(text)) return 'sports';
+  if (/movie|celebrity|music|entertainment|showbiz|actor|singer|kpop|teleserye|kapuso|kapamilya/.test(text)) return 'entertainment';
+  if (/tech|digital|app|online|cyber|ai|data|computer|software|internet/.test(text)) return 'technology';
+  if (/arrested|crime|killed|murder|robbery|drug|police|nbi|pnp|court|verdict|illegal/.test(text)) return 'crime';
+  if (/health|covid|disease|hospital|doctor|vaccine|mental|medical|dengue|outbreak/.test(text)) return 'health';
+  return 'general';
+}
+
+// ======================================
+// IS BREAKING? (keywords that suggest breaking)
+// ======================================
+function isBreaking(title = '') {
+  return /breaking|urgent|alert|just in|update:|developing|exclusive/.test(title.toLowerCase());
+}
+
+// ======================================
+// FETCH NEWS FROM RSS
+// ======================================
+// ======================================
+// FETCH RAW TEXT THROUGH PROXY POOL
+// ======================================
+async function fetchViaProxy(url) {
+  for (let i = 0; i < CORS_PROXIES.length; i++) {
+    try {
+      const proxyUrl = CORS_PROXIES[i](url);
+      const resp = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+      if (!resp.ok) continue;
+      const json = await resp.json();
+      // allorigins and codetabs return { contents: '...' }
+      const text = json.contents || json.body || (typeof json === 'string' ? json : null);
+      if (text && text.length > 200) return text;
+    } catch (e) { /* try next proxy */ }
+  }
+  throw new Error('All proxies failed for: ' + url);
+}
+
+// ======================================
+// PARSE RSS XML → article array
+// ======================================
+function parseRSS(xmlText, sourceName) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(xmlText, 'application/xml');
+
+  // Check parse error
+  if (doc.querySelector('parsererror')) {
+    // Try text/html parse fallback
+    const doc2 = parser.parseFromString(xmlText, 'text/html');
+    const items = doc2.querySelectorAll('item');
+    if (!items.length) throw new Error('XML parse error');
+  }
+
+  const items = doc.querySelectorAll('item, entry');
+  const cutoff = Date.now() - 48 * 60 * 60 * 1000;
+  const results = [];
+
+  items.forEach(item => {
+    const getText = (...tags) => {
+      for (const tag of tags) {
+        const el = item.querySelector(tag);
+        if (el) return el.textContent?.trim() || '';
+      }
+      return '';
+    };
+
+    const getAttr = (tag, attr) => item.querySelector(tag)?.getAttribute(attr) || '';
+
+    const title   = getText('title') || 'Untitled';
+    const link    = getText('link') || getAttr('link', 'href') || '';
+    const desc    = getText('description', 'summary', 'content\\:encoded', 'content');
+    const content = getText('content\\:encoded', 'content', 'description', 'summary');
+    const pubDate = getText('pubDate', 'published', 'updated', 'dc\\:date');
+
+    // Skip if can't parse date or too old
+    const pub = pubDate ? new Date(pubDate).getTime() : Date.now();
+    if (isNaN(pub) || pub < cutoff) return;
+
+    // Try to find image
+    const enclosureUrl  = getAttr('enclosure', 'url');
+    const mediaUrl      = getAttr('media\\:content', 'url') ||
+                          getAttr('media\\:thumbnail', 'url');
+    const image = enclosureUrl || mediaUrl || extractImage(content || desc) || null;
+
+    const rawContent = stripHtml(content || desc);
+    const safeId = safeBase64(link + title).slice(0, 20);
+
+    results.push({
+      id:             safeId,
+      title:          title,
+      content:        rawContent,
+      description:    stripHtml(desc).slice(0, 200),
+      url:            link,
+      image:          image,
+      publishedAt:    pubDate || new Date().toISOString(),
+      source:         sourceName,
+      category:       detectCategory(title, rawContent),
+      breaking:       isBreaking(title),
+      originalTitle:  title,
+      originalContent: rawContent,
+      translated:     false,
+    });
+  });
+
+  return results;
+}
+
+function safeBase64(str) {
+  try { return btoa(unescape(encodeURIComponent(str))); }
+  catch(e) { return Math.random().toString(36).slice(2); }
+}
+
+function extractImage(html = '') {
+  const m = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  if (m) return m[1];
+  // Check for media:thumbnail or similar
+  const m2 = html.match(/https?:\/\/[^\s"'<>]+\.(?:jpg|jpeg|png|webp|gif)(?:\?[^\s"'<>]*)?/i);
+  return m2 ? m2[0] : null;
+}
+
+function stripHtml(html = '') {
+  return html
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&#039;/g, "'")
+    .replace(/\s+/g, ' ').trim();
+}
+
+// ======================================
+// FETCH ONE SOURCE
+// ======================================
+async function fetchFromSource(source) {
+  const xml = await fetchViaProxy(source.url);
+  return parseRSS(xml, source.name);
+}
+
+// ======================================
+// FALLBACK ARTICLES (when all APIs fail)
+// ======================================
+function getFallbackArticles() {
+  const now = new Date();
+  const h = (n) => new Date(now - n * 3600000).toISOString();
+  return [
+    { id:'fb1', title:'PAGASA issues typhoon warning for Visayas and Mindanao', content:'The Philippine Atmospheric, Geophysical and Astronomical Services Administration raised Tropical Cyclone Wind Signal No. 1 over several provinces in Visayas and Mindanao as a tropical depression entered the Philippine Area of Responsibility.', url:'https://www.rappler.com', image:null, publishedAt:h(1), source:'Rappler', category:'weather', breaking:true, originalTitle:'PAGASA issues typhoon warning for Visayas and Mindanao', originalContent:'PAGASA raised wind signals...', translated:false },
+    { id:'fb2', title:'President Marcos signs executive order on food security measures', content:'President Ferdinand Marcos Jr. signed a new executive order directing all government agencies to implement enhanced food security measures amid rising global commodity prices affecting the Philippines.', url:'https://newsinfo.inquirer.net', image:null, publishedAt:h(2), source:'Inquirer', category:'politics', breaking:false, originalTitle:'President Marcos signs executive order on food security measures', originalContent:'President Marcos signed...', translated:false },
+    { id:'fb3', title:'BSP holds interest rates steady amid easing inflation pressures', content:'The Bangko Sentral ng Pilipinas Monetary Board voted to keep the benchmark interest rate unchanged at its latest policy meeting, citing continued easing of inflation and a stable macroeconomic environment.', url:'https://mb.com.ph', image:null, publishedAt:h(3), source:'Manila Bulletin', category:'economy', breaking:false, originalTitle:'BSP holds interest rates steady amid easing inflation pressures', originalContent:'BSP kept rates...', translated:false },
+    { id:'fb4', title:'Philippine basketball team advances to FIBA Asia Cup semifinals', content:'The Gilas Pilipinas men\'s basketball team secured a spot in the FIBA Asia Cup semifinals after defeating their opponents in a thrilling overtime match, boosting national pride across the Philippines.', url:'https://www.philstar.com', image:null, publishedAt:h(4), source:'PhilStar', category:'sports', breaking:false, originalTitle:'Philippine basketball team advances to FIBA Asia Cup semifinals', originalContent:'Gilas Pilipinas won...', translated:false },
+    { id:'fb5', title:'DILG orders crackdown on illegal online gambling operations nationwide', content:'The Department of Interior and Local Government directed all local government units and Philippine National Police units to intensify operations against illegal online gambling activities that have proliferated across the country.', url:'https://data.gmanetwork.com', image:null, publishedAt:h(5), source:'GMA News', category:'crime', breaking:false, originalTitle:'DILG orders crackdown on illegal online gambling operations nationwide', originalContent:'DILG ordered crackdown...', translated:false },
+    { id:'fb6', title:'DOH reports surge in dengue cases in Metro Manila and nearby provinces', content:'The Department of Health reported a significant increase in dengue fever cases in Metro Manila and surrounding provinces, urging local officials and the public to eliminate mosquito breeding grounds and seek medical attention at the first sign of symptoms.', url:'https://newsinfo.inquirer.net', image:null, publishedAt:h(6), source:'Inquirer', category:'health', breaking:false, originalTitle:'DOH reports surge in dengue cases in Metro Manila and nearby provinces', originalContent:'DOH reported dengue surge...', translated:false },
+    { id:'fb7', title:'Cebu Pacific, AirAsia add more domestic flights for Holy Week season', content:'Budget carriers Cebu Pacific and AirAsia Philippines announced additional domestic flights and seat sales ahead of the Holy Week season, anticipating a surge in passenger demand as millions of Filipinos travel to their provinces.', url:'https://mb.com.ph', image:null, publishedAt:h(8), source:'Manila Bulletin', category:'economy', breaking:false, originalTitle:'Cebu Pacific, AirAsia add more domestic flights for Holy Week season', originalContent:'Airlines added flights...', translated:false },
+    { id:'fb8', title:'Earthquake of magnitude 5.4 felt in parts of Davao region', content:'An earthquake with a preliminary magnitude of 5.4 struck parts of the Davao region, with the Philippine Institute of Volcanology and Seismology reporting no immediate casualties or structural damage in the affected areas.', url:'https://www.rappler.com', image:null, publishedAt:h(10), source:'Rappler', category:'weather', breaking:true, originalTitle:'Earthquake of magnitude 5.4 felt in parts of Davao region', originalContent:'An earthquake struck Davao...', translated:false },
+    { id:'fb9', title:'New P50 billion infrastructure projects approved for Luzon, Visayas', content:'The National Economic and Development Authority board approved a slate of major infrastructure projects worth P50 billion targeting improved connectivity across Luzon and Visayas including new expressways, bridges and port upgrades.', url:'https://newsinfo.inquirer.net', image:null, publishedAt:h(11), source:'Inquirer', category:'economy', breaking:false, originalTitle:'New P50 billion infrastructure projects approved for Luzon, Visayas', originalContent:'NEDA approved projects...', translated:false },
+    { id:'fb10', title:"COMELEC prepares for 2025 midterm elections voter registration", content:"The Commission on Elections launched a nationwide voter registration drive in preparation for the 2025 midterm elections, urging all eligible Filipinos to register and update their registration details.", url:'https://www.philstar.com', image:null, publishedAt:h(14), source:'PhilStar', category:'politics', breaking:false, originalTitle:"COMELEC prepares for 2025 midterm elections voter registration", originalContent:'COMELEC launched voter reg...', translated:false },
+    { id:'fb11', title:'DOST launches AI-powered disaster early warning system for Philippines', content:'The Department of Science and Technology unveiled a new artificial intelligence-powered early warning system capable of predicting typhoon paths and flood-prone areas days in advance, in partnership with international technology partners.', url:'https://data.gmanetwork.com', image:null, publishedAt:h(18), source:'GMA News', category:'technology', breaking:false, originalTitle:'DOST launches AI-powered disaster early warning system for Philippines', originalContent:'DOST launched AI system...', translated:false },
+    { id:'fb12', title:"ABS-CBN's flagship teleserye tops nationwide ratings for fifth straight week", content:"ABS-CBN's primetime teleserye maintained its dominance in national television ratings for the fifth consecutive week, achieving record viewership numbers across both urban and provincial audiences according to industry data.", url:'https://www.rappler.com', image:null, publishedAt:h(20), source:'Rappler', category:'entertainment', breaking:false, originalTitle:"ABS-CBN's flagship teleserye tops nationwide ratings for fifth straight week", originalContent:'ABS-CBN teleserye topped ratings...', translated:false },
+  ].map(a => ({ ...a, id: a.id + '_' + Date.now() }));
+}
+
+// ======================================
+// MAIN FETCH ORCHESTRATOR
+// ======================================
+async function fetchAllNews() {
+  if (STATE.isLoading) return;
+  STATE.isLoading = true;
+  showSkeletons();
+  updateStatusLoading();
+
+  const cached = getCache();
+
+  try {
+    // Fetch all sources concurrently, collect successes
+    const results = await Promise.allSettled(
+      RSS_SOURCES.map(s => fetchFromSource(s))
+    );
+
+    const articles = [];
+    let successCount = 0;
+
+    results.forEach((r, i) => {
+      if (r.status === 'fulfilled' && r.value.length > 0) {
+        articles.push(...r.value);
+        successCount++;
+      } else {
+        console.warn(`Source ${RSS_SOURCES[i].name} failed:`, r.reason?.message);
+      }
+    });
+
+    // Sort newest first
+    articles.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+    const deduped = deduplicateArticles(articles);
+
+    if (deduped.length > 0) {
+      STATE.articles = deduped;
+      saveCache(deduped);
+      showToast(`✅ Loaded ${deduped.length} articles from ${successCount} sources`, 'success');
+    } else if (cached.length > 0) {
+      STATE.articles = cached;
+      showToast('📂 Using cached news (sources temporarily unavailable)', 'info');
+    } else {
+      // Ultimate fallback: show curated sample news
+      STATE.articles = getFallbackArticles();
+      showToast('📰 Showing sample news (RSS sources blocked by network)', 'info');
+    }
+
+    updateTicker();
+    filterArticles();
+    updateStatus();
+
+    if (STATE.isTranslated) translateAllCards();
+
+  } catch (err) {
+    console.error('fetchAllNews error:', err);
+    if (cached.length > 0) {
+      STATE.articles = cached;
+      filterArticles();
+      updateTicker();
+      updateStatus();
+      showToast('📂 Showing cached news', 'info');
+    } else {
+      STATE.articles = getFallbackArticles();
+      filterArticles();
+      updateTicker();
+      updateStatus();
+      showToast('📰 Showing sample news (network issue)', 'info');
+    }
+  }
+
+  STATE.isLoading = false;
+}
+
+function updateStatusLoading() {
+  document.getElementById('status-text').textContent = 'Fetching latest Philippine news...';
+}
+
+function deduplicateArticles(articles) {
+  const seen = new Set();
+  return articles.filter(a => {
+    if (!a || !a.title) return false;
+    const key = a.title.toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,40);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+// ======================================
+// LOCAL STORAGE CACHE
+// ======================================
+function saveCache(articles) {
+  try {
+    localStorage.setItem('balitaPH_cache', JSON.stringify({ ts: Date.now(), articles }));
+  } catch(e) {}
+}
+
+function getCache() {
+  try {
+    const data = JSON.parse(localStorage.getItem('balitaPH_cache') || '{}');
+    if (!data.articles) return [];
+    const age = Date.now() - data.ts;
+    if (age > 48 * 60 * 60 * 1000) return []; // expired
+    return data.articles;
+  } catch(e) { return []; }
+}
+
+function saveBookmarks() {
+  try { localStorage.setItem('balitaPH_bookmarks', JSON.stringify(STATE.bookmarks)); } catch(e) {}
+}
+
+function loadBookmarks() {
+  try {
+    STATE.bookmarks = JSON.parse(localStorage.getItem('balitaPH_bookmarks') || '[]');
+  } catch(e) { STATE.bookmarks = []; }
+}
+
+function saveSettings() {
+  try {
+    localStorage.setItem('balitaPH_settings', JSON.stringify({
+      theme: document.documentElement.getAttribute('data-theme'),
+      fontSize: STATE.fontSize,
+      showImages: STATE.showImages,
+    }));
+  } catch(e) {}
+}
+
+function loadSettings() {
+  try {
+    const s = JSON.parse(localStorage.getItem('balitaPH_settings') || '{}');
+    if (s.theme) {
+      document.documentElement.setAttribute('data-theme', s.theme);
+      document.getElementById('dark-mode-toggle').checked = s.theme === 'dark';
+    }
+    if (s.fontSize) {
+      STATE.fontSize = s.fontSize;
+      document.documentElement.style.fontSize = STATE.fontSize + 'px';
+      document.getElementById('font-size-display').textContent = STATE.fontSize + 'px';
+    }
+    if (s.showImages === false) {
+      STATE.showImages = false;
+      document.getElementById('images-toggle').checked = false;
+    }
+  } catch(e) {}
+}
+
+// ======================================
+// FILTER & SEARCH
+// ======================================
+function filterArticles() {
+  let articles = [...STATE.articles];
+
+  // Category filter
+  if (STATE.category !== 'all') {
+    articles = articles.filter(a => a.category === STATE.category);
+  }
+
+  // Search filter
+  if (STATE.searchQuery) {
+    const q = STATE.searchQuery.toLowerCase();
+    articles = articles.filter(a =>
+      a.title.toLowerCase().includes(q) ||
+      a.content.toLowerCase().includes(q) ||
+      a.source.toLowerCase().includes(q)
+    );
+  }
+
+  STATE.filtered = articles;
+  renderNews();
+}
+
+// ======================================
+// RENDER NEWS
+// ======================================
+function showSkeletons() {
+  const grid = document.getElementById('news-grid');
+  grid.innerHTML = Array(8).fill(0).map(() => `
+    <div class="skeleton-card">
+      <div class="skeleton-img"></div>
+      <div class="skeleton-body">
+        <div class="skeleton-line short"></div>
+        <div class="skeleton-line tall"></div>
+        <div class="skeleton-line medium"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderNews() {
+  const grid = document.getElementById('news-grid');
+  const articles = STATE.filtered;
+
+  if (articles.length === 0) {
+    grid.innerHTML = `
+      <div class="error-state" style="grid-column:1/-1">
+        <div class="error-icon">🗞️</div>
+        <div class="error-title">No news found</div>
+        <div class="error-text">Try a different category or clear the search.</div>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = articles.map((a, i) => renderCard(a, i)).join('');
+
+  // Attach events
+  grid.querySelectorAll('.news-card').forEach((el, i) => {
+    el.addEventListener('click', (e) => {
+      if (e.target.closest('.card-action-btn')) return;
+      openModal(articles[i]);
+    });
+  });
+
+  // Lazy load images
+  if (STATE.showImages) {
+    const imgs = grid.querySelectorAll('img.lazy');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          img.src = img.dataset.src;
+          img.onload = () => img.classList.add('loaded');
+          img.onerror = () => {
+            img.parentElement.innerHTML = getCategoryEmoji(articles[parseInt(img.dataset.index)].category);
+          };
+          observer.unobserve(img);
+        }
+      });
+    }, { rootMargin: '100px' });
+    imgs.forEach(img => observer.observe(img));
+  }
+
+  // Bookmark btn events
+  grid.querySelectorAll('.card-action-btn[data-action="bookmark"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      toggleBookmark(articles[idx], btn);
+    });
+  });
+
+  // Share btn events
+  grid.querySelectorAll('.card-action-btn[data-action="share"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      shareArticle(articles[idx]);
+    });
+  });
+
+  // TTS btn events
+  grid.querySelectorAll('.card-action-btn[data-action="tts"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      speakArticle(articles[idx], btn);
+    });
+  });
+}
+
+function renderCard(a, i) {
+  const isBookmarked = STATE.bookmarks.some(b => b.id === a.id);
+  const timeAgo = getTimeAgo(a.publishedAt);
+  const snippet = (a.title.length > 80) ? '' : (a.content.slice(0, 120) + '...');
+  const title = highlightSearch(a.title, STATE.searchQuery);
+
+  let imageHtml = '';
+  if (STATE.showImages) {
+    if (a.image) {
+      imageHtml = `<img class="card-image lazy" data-src="${escHtml(a.image)}" data-index="${i}" alt="">`;
+    } else {
+      imageHtml = `<div class="card-image-placeholder">${getCategoryEmoji(a.category)}</div>`;
+    }
+  }
+
+  return `
+    <article class="news-card" style="animation-delay:${Math.min(i * 0.05, 0.5)}s">
+      ${imageHtml}
+      <div class="card-body">
+        <div class="card-meta">
+          ${a.breaking ? '<span class="card-breaking">🔴 Breaking</span>' : ''}
+          <span class="card-category">${a.category}</span>
+          <span class="card-source">${escHtml(a.source)}</span>
+          <span class="card-time">${timeAgo}</span>
+        </div>
+        <h3 class="card-headline">${title}</h3>
+        ${snippet ? `<p class="card-snippet">${escHtml(snippet)}</p>` : ''}
+        <div class="card-footer">
+          <button class="card-action-btn ${isBookmarked ? 'bookmarked' : ''}" data-action="bookmark" data-idx="${i}" title="Bookmark">
+            ${isBookmarked ? '🔖' : '📌'}
+          </button>
+          <button class="card-action-btn" data-action="share" data-idx="${i}" title="Share">🔗</button>
+          <button class="card-action-btn" data-action="tts" data-idx="${i}" title="Read aloud">🔊</button>
+          ${a.translated ? '<span class="translate-badge">🌐 Bisaya</span>' : ''}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function getCategoryEmoji(cat) {
+  const map = {
+    politics:'🏛️', economy:'📊', weather:'🌦️',
+    sports:'🏆', entertainment:'🎭', technology:'💻',
+    crime:'⚖️', health:'🏥', general:'📰'
+  };
+  return map[cat] || '📰';
+}
+
+function highlightSearch(text, query) {
+  if (!query) return escHtml(text);
+  const re = new RegExp(`(${escRegex(query)})`, 'gi');
+  return escHtml(text).replace(re, '<mark class="highlight">$1</mark>');
+}
+
+function escHtml(s = '') {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function escRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+// ======================================
+// TIME AGO
+// ======================================
+function getTimeAgo(dateStr) {
+  const now = Date.now();
+  const then = new Date(dateStr).getTime();
+  const diff = now - then;
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  return `${days}d ago`;
+}
+
+// ======================================
+// TICKER
+// ======================================
+function updateTicker() {
+  const breaking = STATE.articles.filter(a => a.breaking || true).slice(0, 12);
+  if (!breaking.length) return;
+
+  const text = breaking.map(a => `● ${a.title} [${a.source}]`).join('     ');
+  const doubled = text + '     ' + text;
+
+  document.getElementById('ticker-content').textContent = doubled;
+
+  // Click to open
+  document.getElementById('ticker-content').addEventListener('click', () => {
+    if (breaking[0]) openModal(breaking[0]);
+  });
+}
+
+// ======================================
+// STATUS BAR
+// ======================================
+function updateStatus() {
+  const count = STATE.articles.length;
+  const breaking = STATE.articles.filter(a => a.breaking).length;
+  const now = new Date().toLocaleTimeString('en-PH', { hour:'2-digit', minute:'2-digit' });
+  document.getElementById('status-text').textContent =
+    `${count} articles · ${breaking} breaking · Updated ${now}`;
+}
+
+// ======================================
+// MODAL
+// ======================================
+function openModal(article) {
+  STATE.currentArticle = article;
+
+  // Image
+  const wrapper = document.getElementById('modal-image-wrapper');
+  if (STATE.showImages && article.image) {
+    wrapper.innerHTML = `<img class="modal-image" src="${escHtml(article.image)}" onerror="this.parentElement.innerHTML='<div class=\\'modal-image-placeholder\\'>${getCategoryEmoji(article.category)}</div>'" alt="">
+    <button class="modal-close-btn" onclick="closeModal()">✕</button>`;
+  } else {
+    wrapper.innerHTML = `<div class="modal-image-placeholder">${getCategoryEmoji(article.category)}</div>
+    <button class="modal-close-btn" onclick="closeModal()">✕</button>`;
+  }
+
+  // Meta
+  document.getElementById('modal-meta').innerHTML = `
+    ${article.breaking ? '<span class="card-breaking">🔴 Breaking</span>' : ''}
+    <span class="card-category">${article.category}</span>
+    <span class="card-dot"></span>
+    <span class="card-source">${escHtml(article.source)}</span>
+    <span class="card-dot"></span>
+    <span class="card-time">${getTimeAgo(article.publishedAt)}</span>
+    ${article.translated ? '<span class="translate-badge">🌐 Bisaya</span>' : ''}
+  `;
+
+  document.getElementById('modal-headline').textContent = article.title;
+  document.getElementById('modal-content').textContent =
+    article.content.length > 50
+      ? article.content.slice(0, 1200) + (article.content.length > 1200 ? '...' : '')
+      : 'Click "Read Full Article" to view the complete story.';
+
+  // Hide summary
+  const summaryBox = document.getElementById('summary-box');
+  summaryBox.classList.remove('visible');
+  document.getElementById('summary-text').textContent = '';
+
+  // Actions
+  const isBookmarked = STATE.bookmarks.some(b => b.id === article.id);
+  document.getElementById('modal-actions').innerHTML = `
+    <button class="modal-btn primary" onclick="window.open('${escHtml(article.url)}','_blank')">🔗 Full Article</button>
+    <button class="modal-btn" id="modal-summarize-btn" onclick="summarizeArticle()">🤖 Summarize</button>
+    <button class="modal-btn" id="modal-translate-btn" onclick="translateModal()">${STATE.isTranslated ? '🇵🇭 English' : '🌐 Bisaya'}</button>
+    <button class="modal-btn" id="modal-tts-btn" onclick="speakModal()">🔊 Read Aloud</button>
+    <button class="modal-btn" id="modal-bookmark-btn" onclick="toggleBookmarkModal()">
+      ${isBookmarked ? '🔖 Saved' : '📌 Save'}
+    </button>
+    <button class="modal-btn" onclick="shareArticle(STATE.currentArticle)">🔗 Share</button>
+  `;
+
+  document.getElementById('modal-overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+  stopSpeaking();
+}
+
+// Close on overlay click
+document.getElementById('modal-overlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+});
+
+// ======================================
+// SUMMARIZE (Extractive)
+// ======================================
+function summarizeArticle() {
+  const article = STATE.currentArticle;
+  if (!article) return;
+
+  const btn = document.getElementById('modal-summarize-btn');
+  const summaryBox = document.getElementById('summary-box');
+  const summaryText = document.getElementById('summary-text');
+
+  btn.textContent = '⏳ Summarizing...';
+  btn.disabled = true;
+
+  // Simulate short delay for UX
+  setTimeout(() => {
+    const summary = extractiveSummarize(article.content || article.description, 3);
+    summaryText.textContent = summary;
+    summaryBox.classList.add('visible');
+    btn.textContent = '🤖 Summarize';
+    btn.disabled = false;
+  }, 600);
+}
+
+function extractiveSummarize(text, numSentences = 3) {
+  if (!text || text.length < 100) return 'Summary not available for this article. Please read the full story.';
+
+  // Split into sentences
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
+  if (sentences.length <= numSentences) return text;
+
+  // Score by word frequency
+  const words = text.toLowerCase().match(/\b[a-z]{4,}\b/g) || [];
+  const freq = {};
+  words.forEach(w => { freq[w] = (freq[w] || 0) + 1; });
+
+  const scored = sentences.map((s, i) => {
+    const sWords = s.toLowerCase().match(/\b[a-z]{4,}\b/g) || [];
+    const score = sWords.reduce((sum, w) => sum + (freq[w] || 0), 0) / (sWords.length || 1);
+    return { s, score, i };
+  });
+
+  // Top N by score, maintaining order
+  const top = scored
+    .sort((a, b) => b.score - a.score)
+    .slice(0, numSentences)
+    .sort((a, b) => a.i - b.i);
+
+  return top.map(t => t.s.trim()).join(' ');
+}
+
+// ======================================
+// TRANSLATION (MyMemory API)
+// ======================================
+async function translateText(text, from = 'en', to = 'ceb') {
+  if (!text || text.trim().length < 3) return text;
+  const trimmed = text.slice(0, 500); // API limit
+  const url = `${MYMEMORY_API}?q=${encodeURIComponent(trimmed)}&langpair=${from}|${to}`;
+  try {
+    const resp = await fetch(url);
+    const data = await resp.json();
+    if (data.responseStatus === 200 && data.responseData?.translatedText) {
+      return data.responseData.translatedText;
+    }
+  } catch(e) {}
+  return text; // fallback to original
+}
+
+async function toggleGlobalTranslate() {
+  const btn = document.getElementById('translate-btn');
+
+  if (STATE.isTranslated) {
+    // Revert
+    STATE.isTranslated = false;
+    btn.classList.remove('active');
+    STATE.articles.forEach(a => {
+      a.title = a.originalTitle;
+      a.content = a.originalContent;
+      a.translated = false;
+    });
+    filterArticles();
+    showToast('📖 Switched back to English', 'success');
+  } else {
+    // Translate
+    STATE.isTranslated = true;
+    btn.classList.add('active');
+    btn.innerHTML = '<span class="spin">⏳</span>';
+    showToast('🌐 Translating to Bisaya...', 'info');
+    await translateAllCards();
+    btn.innerHTML = '🌐';
+    showToast('✅ Translated to Bisaya!', 'success');
+  }
+}
+
+async function translateAllCards() {
+  // Translate first 10 articles in parallel (API limit)
+  const toTranslate = STATE.articles.filter(a => !a.translated).slice(0, 10);
+  await Promise.all(toTranslate.map(async a => {
+    try {
+      const [titleT] = await Promise.all([
+        translateText(a.originalTitle),
+      ]);
+      a.title = titleT;
+      a.translated = true;
+    } catch(e) {}
+  }));
+  filterArticles();
+}
+
+async function translateModal() {
+  const article = STATE.currentArticle;
+  if (!article) return;
+  const btn = document.getElementById('modal-translate-btn');
+  btn.textContent = '⏳ Translating...';
+  btn.disabled = true;
+
+  if (article.translated) {
+    // Revert
+    article.title = article.originalTitle;
+    article.content = article.originalContent;
+    article.translated = false;
+    document.getElementById('modal-headline').textContent = article.title;
+    document.getElementById('modal-content').textContent = article.content.slice(0, 1200);
+    btn.textContent = '🌐 Bisaya';
+  } else {
+    const [titleT, contentT] = await Promise.all([
+      translateText(article.originalTitle),
+      translateText(article.originalContent.slice(0, 500)),
+    ]);
+    article.title = titleT;
+    article.content = contentT;
+    article.translated = true;
+    document.getElementById('modal-headline').textContent = article.title;
+    document.getElementById('modal-content').textContent = article.content;
+    btn.textContent = '🇺🇸 English';
+  }
+
+  btn.disabled = false;
+  filterArticles();
+}
+
+function toggleAutoTranslate() {
+  const on = document.getElementById('auto-translate-toggle').checked;
+  if (on) toggleGlobalTranslate();
+  else if (STATE.isTranslated) toggleGlobalTranslate();
+}
+
+// ======================================
+// TEXT-TO-SPEECH
+// ======================================
+function speakArticle(article, btn) {
+  if (STATE.isSpeaking) {
+    stopSpeaking();
+    if (btn) btn.classList.remove('reading-active');
+    return;
+  }
+  const text = `${article.title}. ${article.content.slice(0, 600)}`;
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'en-PH';
+  utt.rate = 0.95;
+  utt.onend = () => {
+    STATE.isSpeaking = false;
+    if (btn) btn.classList.remove('reading-active');
+  };
+  STATE.speechUtterance = utt;
+  STATE.isSpeaking = true;
+  if (btn) btn.classList.add('reading-active');
+  speechSynthesis.speak(utt);
+}
+
+function speakModal() {
+  const article = STATE.currentArticle;
+  if (!article) return;
+  const btn = document.getElementById('modal-tts-btn');
+  if (STATE.isSpeaking) {
+    stopSpeaking();
+    btn.textContent = '🔊 Read Aloud';
+    return;
+  }
+  speakArticle(article, null);
+  btn.textContent = '⏹ Stop Reading';
+  STATE.speechUtterance.onend = () => {
+    STATE.isSpeaking = false;
+    if (btn) btn.textContent = '🔊 Read Aloud';
+  };
+}
+
+function stopSpeaking() {
+  speechSynthesis.cancel();
+  STATE.isSpeaking = false;
+}
+
+// ======================================
+// BOOKMARKS
+// ======================================
+function toggleBookmark(article, btn) {
+  const idx = STATE.bookmarks.findIndex(b => b.id === article.id);
+  if (idx >= 0) {
+    STATE.bookmarks.splice(idx, 1);
+    if (btn) { btn.textContent = '📌'; btn.classList.remove('bookmarked'); }
+    showToast('📌 Removed from bookmarks');
+  } else {
+    STATE.bookmarks.unshift({ ...article });
+    if (btn) { btn.textContent = '🔖'; btn.classList.add('bookmarked'); }
+    showToast('🔖 Bookmarked!', 'success');
+  }
+  saveBookmarks();
+  if (STATE.currentView === 'bookmarks') renderBookmarks();
+}
+
+function toggleBookmarkModal() {
+  const article = STATE.currentArticle;
+  if (!article) return;
+  const btn = document.getElementById('modal-bookmark-btn');
+  toggleBookmark(article, null);
+  const isBookmarked = STATE.bookmarks.some(b => b.id === article.id);
+  btn.textContent = isBookmarked ? '🔖 Saved' : '📌 Save';
+}
+
+function renderBookmarks() {
+  const panel = document.getElementById('bookmarks-panel');
+  if (!STATE.bookmarks.length) {
+    panel.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">🔖</div>
+        <div class="empty-state-title">No saved articles</div>
+        <div class="empty-state-text">Tap the 📌 icon on any news card to save it here.</div>
+      </div>
+    `;
+    return;
+  }
+
+  panel.innerHTML = `<div id="news-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px">
+    ${STATE.bookmarks.map((a, i) => renderCard(a, i)).join('')}
+  </div>`;
+
+  // Attach events for bookmark panel cards
+  panel.querySelectorAll('.news-card').forEach((el, i) => {
+    el.addEventListener('click', (e) => {
+      if (e.target.closest('.card-action-btn')) return;
+      openModal(STATE.bookmarks[i]);
+    });
+  });
+
+  panel.querySelectorAll('.card-action-btn[data-action="bookmark"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      toggleBookmark(STATE.bookmarks[idx], btn);
+      renderBookmarks();
+    });
+  });
+
+  panel.querySelectorAll('.card-action-btn[data-action="share"]').forEach(btn => {
+    btn.addEventListener('click', () => shareArticle(STATE.bookmarks[parseInt(btn.dataset.idx)]));
+  });
+
+  panel.querySelectorAll('.card-action-btn[data-action="tts"]').forEach(btn => {
+    btn.addEventListener('click', () => speakArticle(STATE.bookmarks[parseInt(btn.dataset.idx)], btn));
+  });
+}
+
+// ======================================
+// SHARE
+// ======================================
+async function shareArticle(article) {
+  const shareData = { title: article.title, url: article.url, text: article.title };
+  if (navigator.share) {
+    try { await navigator.share(shareData); return; } catch(e) {}
+  }
+  // Fallback: copy to clipboard
+  try {
+    await navigator.clipboard.writeText(`${article.title}\n${article.url}`);
+    showToast('🔗 Link copied to clipboard!', 'success');
+  } catch(e) {
+    showToast('❌ Could not copy link', 'error');
+  }
+}
+
+// ======================================
+// SETTINGS ACTIONS
+// ======================================
+function toggleTheme() {
+  const isDark = document.getElementById('dark-mode-toggle').checked;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  saveSettings();
+}
+
+function toggleImages() {
+  STATE.showImages = document.getElementById('images-toggle').checked;
+  saveSettings();
+  filterArticles();
+}
+
+function changeFontSize(delta) {
+  STATE.fontSize = Math.max(12, Math.min(22, STATE.fontSize + delta));
+  document.documentElement.style.fontSize = STATE.fontSize + 'px';
+  document.getElementById('font-size-display').textContent = STATE.fontSize + 'px';
+  saveSettings();
+}
+
+function setAutoRefresh() {
+  const mins = parseInt(document.getElementById('refresh-interval').value);
+  clearInterval(STATE.autoRefreshInterval);
+  if (mins > 0) {
+    STATE.autoRefreshInterval = setInterval(() => {
+      fetchAllNews();
+      showToast('🔄 News auto-refreshed', 'info');
+    }, mins * 60 * 1000);
+    showToast(`⏰ Auto-refresh set to ${mins} min`, 'success');
+  }
+}
+
+function toggleNotifications() {
+  const on = document.getElementById('notif-toggle').checked;
+  if (on && 'Notification' in window) {
+    Notification.requestPermission().then(p => {
+      if (p === 'granted') showToast('🔔 Breaking news notifications on', 'success');
+      else {
+        document.getElementById('notif-toggle').checked = false;
+        showToast('❌ Notification permission denied', 'error');
+      }
+    });
+  }
+}
+
+function openSettings() {
+  document.getElementById('settings-drawer').classList.add('open');
+  document.getElementById('settings-overlay').classList.add('active');
+  updateCacheSize();
+}
+
+function closeSettings() {
+  document.getElementById('settings-drawer').classList.remove('open');
+  document.getElementById('settings-overlay').classList.remove('active');
+}
+
+function updateCacheSize() {
+  try {
+    const cached = localStorage.getItem('balitaPH_cache') || '';
+    const kb = (new Blob([cached]).size / 1024).toFixed(1);
+    document.getElementById('cache-size').textContent = `${kb} KB`;
+  } catch(e) { document.getElementById('cache-size').textContent = 'N/A'; }
+}
+
+function clearCache() {
+  localStorage.removeItem('balitaPH_cache');
+  showToast('🗑️ Cache cleared', 'success');
+  updateCacheSize();
+}
+
+function logout() {
+  if (!confirm('Reset the app? This will clear all saved data and bookmarks.')) return;
+  localStorage.clear();
+  STATE.bookmarks = [];
+  STATE.articles = [];
+  STATE.filtered = [];
+  STATE.isTranslated = false;
+  clearInterval(STATE.autoRefreshInterval);
+  closeSettings();
+  // Reset UI
+  document.documentElement.setAttribute('data-theme', 'dark');
+  document.getElementById('dark-mode-toggle').checked = true;
+  showToast('👋 App reset. Reloading news...', 'info');
+  setTimeout(() => fetchAllNews(), 1000);
+}
+
+// ======================================
+// SHOW ERROR
+// ======================================
+function showError(msg) {
+  document.getElementById('news-grid').innerHTML = `
+    <div class="error-state" style="grid-column:1/-1">
+      <div class="error-icon">⚠️</div>
+      <div class="error-title">Oops! Something went wrong</div>
+      <div class="error-text">${escHtml(msg)}</div>
+      <button class="retry-btn" onclick="fetchAllNews()">🔄 Try Again</button>
+    </div>
+  `;
+}
+
+// ======================================
+// TOAST
+// ======================================
+function showToast(msg, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.animation = 'toastOut 0.3s ease forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ======================================
+// VIEW SWITCHER
+// ======================================
+function switchView(view) {
+  STATE.currentView = view;
+  const newsGrid = document.getElementById('news-grid');
+  const bookmarksPanel = document.getElementById('bookmarks-panel');
+  const tabNews = document.getElementById('tab-news');
+  const tabBookmarks = document.getElementById('tab-bookmarks');
+
+  if (view === 'news') {
+    newsGrid.style.display = 'grid';
+    bookmarksPanel.classList.remove('active');
+    tabNews.classList.add('active');
+    tabBookmarks.classList.remove('active');
+  } else {
+    newsGrid.style.display = 'none';
+    bookmarksPanel.classList.add('active');
+    tabNews.classList.remove('active');
+    tabBookmarks.classList.add('active');
+    renderBookmarks();
+  }
+}
+
+// ======================================
+// CATEGORY FILTER
+// ======================================
+document.getElementById('category-bar').addEventListener('click', (e) => {
+  const pill = e.target.closest('.cat-pill');
+  if (!pill) return;
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+  STATE.category = pill.dataset.cat;
+  filterArticles();
+});
+
+// ======================================
+// SEARCH (debounced)
+// ======================================
+let searchDebounce;
+document.getElementById('search-input').addEventListener('input', (e) => {
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(() => {
+    STATE.searchQuery = e.target.value.trim();
+    filterArticles();
+  }, 250);
+});
+
+// ======================================
+// HEADER BUTTONS
+// ======================================
+document.getElementById('translate-btn').addEventListener('click', toggleGlobalTranslate);
+document.getElementById('refresh-btn').addEventListener('click', () => {
+  const btn = document.getElementById('refresh-btn');
+  btn.innerHTML = '<span class="spin">🔄</span>';
+  fetchAllNews().then(() => { btn.innerHTML = '🔄'; });
+  showToast('🔄 Refreshing news...', 'info');
+});
+document.getElementById('bookmarks-btn').addEventListener('click', () => {
+  switchView(STATE.currentView === 'bookmarks' ? 'news' : 'bookmarks');
+  document.getElementById('bookmarks-btn').classList.toggle('active');
+});
+document.getElementById('settings-btn').addEventListener('click', openSettings);
+document.getElementById('settings-overlay').addEventListener('click', closeSettings);
+
+// ======================================
+// OFFLINE DETECTION
+// ======================================
+window.addEventListener('offline', () => {
+  document.getElementById('offline-banner').classList.add('visible');
+  showToast('📡 You\'re offline', 'error');
+});
+window.addEventListener('online', () => {
+  document.getElementById('offline-banner').classList.remove('visible');
+  showToast('✅ Back online!', 'success');
+  fetchAllNews();
+});
+
+// ======================================
+// KEYBOARD SHORTCUTS
+// ======================================
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === '/' && !e.target.closest('input')) {
+    e.preventDefault();
+    document.getElementById('search-input').focus();
+  }
+});
+
+// ======================================
+// BREAKING NEWS NOTIFICATION
+// ======================================
+function notifyBreaking(article) {
+  if (Notification.permission === 'granted') {
+    new Notification('🔴 Breaking News — Balita PH', {
+      body: article.title,
+      icon: '🇵🇭',
+    });
+  }
+}
+
+// ======================================
+// AUTO-REFRESH (default: 10 mins)
+// ======================================
+function initAutoRefresh() {
+  STATE.autoRefreshInterval = setInterval(() => {
+    fetchAllNews();
+  }, 10 * 60 * 1000);
+}
+
+// ======================================
+// INIT
+// ======================================
+function init() {
+  loadSettings();
+  loadBookmarks();
+
+  // Check offline
+  if (!navigator.onLine) {
+    document.getElementById('offline-banner').classList.add('visible');
+  }
+
+  // Start fetching
+  fetchAllNews();
+  initAutoRefresh();
+
+  // Set default refresh select
+  document.getElementById('refresh-interval').value = '10';
+}
+
+// Run
+init();
+</script>
+</body>
+</html>
